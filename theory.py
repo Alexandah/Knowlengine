@@ -1,5 +1,30 @@
 import networkx as nx 
 
+def main():
+	T = Theory()
+	arg = ""
+	while True:
+		arg = input("Knowlengine: ")
+		if arg == "add":
+			print("fook yourself!\n")
+		elif arg == "link":
+			print("fook yourself!\n")
+		elif arg == "rmIdea":
+			print("fook yourself!\n")
+		elif arg == "rmLink":
+			print("fook yourself!\n")
+		elif arg == "display":
+			print("fook yourself!\n")
+		elif arg == "help":
+			print("Commands: add, link, rmIdea, rmLink, display\n")
+		else:
+			print("Unrecognized argument.\n")
+			break
+
+if __name__ == "__main__":
+	main()
+
+
 class Idea:
 	#constructor for brainstorm theory type
 	def __init__(self, name, description):
