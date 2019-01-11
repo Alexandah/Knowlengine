@@ -60,13 +60,21 @@ class Theory:
 		if towardsNode==None:
 			print("End node doesn't exist!")
 			return
-		
+
 		#remove edge if it exists, print error otherwise
-		try:	
+		try:
 			self.ideaNetwork.remove_edge(awayNode, towardsNode)
 		except:
 			print("Link doesn't exist to be removed!")
 
+
+
+	#calculates the std deviation of num edges per node
+	#and ranks each node according to its std deviation
+	#def connectivityStdDev(self):
+		#loop through the nodes and get their degrees to calculate
+		#the std deviation
+	#	stdDev = 0;
 
 	#display work here
 	#make it look pretty later
@@ -85,16 +93,7 @@ class Theory:
 			print(output)
 		print("\n")
 
-		
-	#loop through graph for a path back to oneself
-	def checkCircularity(self, idea):
-		cycles = nx.simple_cycles(self.ideaNetwork)
-		print("Cycles: "+cycles+"\n")
-		
-	#see if any set of ideas are disconnected from the rest
-	#returns this set of disconnected nodes if found, null otherwise
-	def findIslands(self):
-		print("eat ass\n")
+
 
 #handles cmd line parsing
 def main():
@@ -113,12 +112,12 @@ def main():
 			ideaB = input("To idea: ")
 			t.linkIdeas(ideaA, ideaB)
 			print()
-		
+
 		elif arg == "rmIdea":
 			name = input("Idea to remove: ")
 			t.removeIdea(name)
 			print()
-		
+
 		elif arg == "rmLink":
 			ideaA = input("Start of link to remove: ")
 			ideaB = input("End of link to remove: ")
@@ -139,4 +138,3 @@ def main():
 
 if __name__ == "__main__":
 	main()
-		
