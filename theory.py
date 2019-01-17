@@ -1,9 +1,10 @@
 import networkx as nx
+import math
 #import networkx.drawing as draw
 #import matplotlib.pyplot as plot
 
 class Idea:
-	#constructor for brainstorm theory type
+	#constructor for "brainstorm" theory type
 	def __init__(self, name, description):
 		self.name = name
 		self.description = description
@@ -24,6 +25,20 @@ class Theory:
 			if node.name == name:
 				return node
 		return None
+
+	#returns the degree of a given node object
+	#returns -1 if the node doesn't exist
+	def getDeg(self, node):
+		if node not in self.ideaNetwork.nodes():
+			return -1
+		return self.ideaNetwork.degree(node)
+
+	#given an idea object and attribute string, return the attribute
+	def getAttribute(self, node, attribute):
+		return self.ideaNetwork.node[node][attribute]
+	#given an idea object, attribute string, and new value, set the attribute
+	def setAttribute(self, node, attribute, value):
+		self.ideaNetwork.node[node][attribute] = value
 
 	#adds given idea object to theory graph
 	def addIdea(self, idea):
@@ -70,11 +85,33 @@ class Theory:
 
 
 	#calculates the std deviation of num edges per node
-	#and ranks each node according to its std deviation
-	#def connectivityStdDev(self):
-		#loop through the nodes and get their degrees to calculate
-		#the std deviation
-	#	stdDev = 0;
+	#and ranks each node according to this sigma value
+	#returns list of properly ranked ideas
+	def connectivityStdDev(self):
+		ideas = self.ideaNetwork.nodes()
+		#loop through the nodes and calculate average degree
+		avgDeg = 0
+		for idea in ideas:
+			avgDeg += self.getDeg(idea)
+		avgDeg /= len(ideas)
+
+		#calculate the std deviation = sqrt((1/n)sum([Xi-avg]^2))
+		sigma = 0
+		for idea in ideas:
+			sigma += pow(self.getDeg(idea)-avgDeg,2)
+		sigma /= len(ideas)
+		sigma = math.sqrt(sigma)
+		#rank each node according to its sigma adjusted value
+		ranked = list()
+		for idea in ideas:
+			#mark the node with its value
+			self.setAttribute(idea, 'connectivityRating', self.getDeg(idea)/sigma)
+			ranked.append(idea)
+
+		#sort ideas by connectivity
+		ranked.sort(key = lambda idea: self.getAttribute(idea, 'connectivityRating'), reverse=True)
+		return ranked
+
 
 	#display work here
 	#make it look pretty later
@@ -127,8 +164,14 @@ def main():
 		elif arg == "display":
 			t.display()
 
+		elif arg == "rank":
+			print("Ideas ranked by connectedness:")
+			for idea in t.connectivityStdDev():
+				print("Name: "+idea.name+" Connectivity: "+str(t.getAttribute(idea, 'connectivityRating')))
+			print()
+
 		elif arg == "help":
-			print("Commands: add, link, rmIdea, rmLink, display, exit\n")
+			print("Commands: add, link, rmIdea, rmLink, rank, display, exit\n")
 
 		elif arg == "exit":
 			break
