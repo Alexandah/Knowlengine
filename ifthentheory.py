@@ -1,5 +1,6 @@
 import networkx as nx
-import theory.py
+from theory import Theory
+from theory import Idea
 
 class IfThenTheory(Theory):
 	
@@ -34,7 +35,7 @@ class IfThenTheory(Theory):
 
 		#if this idea has no premises, then treat it as an axiom true in itself.
 		#this cannot be a nonsequeter in this case.
-		if len(premises) is 0:
+		if premises is None:
 			return False
 		
 		#check each word in the idea's description
@@ -47,7 +48,19 @@ class IfThenTheory(Theory):
 			#if not, then a nonsequeter has occurred
 			for premise in premises:
 				if word not in premise.description.split():
+					print("Found nonsequeter on word: "+word)
 					return True 
 
 		#we've checked all the relevant words and failed to find a non-sequeter
 		return False
+
+	#return a list of all suspected nonsequeters
+	#I'm guessing this is around O(n^2) to O(n^3) but I don't feel like 
+	#calculating this precisely rn
+	def checkNonSequeters(self):
+		nonSeq = list()
+		for idea in self.ideaNetwork.nodes():
+			if self.isNonSequeterNaive(idea.name):
+				nonSeq.append(idea)
+
+		return nonSeq
