@@ -29,14 +29,8 @@ class IfThenTheory(Theory):
 	#seeing if their occurences occur at least once in the ideas from which this idea derives
 	#-if at least one item of the conclusion cannot be found within the argument's premises, 
 	#then return true. Otherwise return false. 
-	def isNonSequeterNaive(self, name):
-		idea = self.getNode(name)
+	def isNonSequeterNaive(self, idea):
 		premises = self.ideaNetwork.predecessors(idea)
-
-		#if this idea has no premises, then treat it as an axiom true in itself.
-		#this cannot be a nonsequeter in this case.
-		if premises is None:
-			return False
 		
 		#check each word in the idea's description
 		words = idea.description.split()
@@ -46,10 +40,25 @@ class IfThenTheory(Theory):
 				continue
 			#check if this word can be found within the premises
 			#if not, then a nonsequeter has occurred
+			found = False
+			numPremises = 0
 			for premise in premises:
-				if word not in premise.description.split():
-					print("Found nonsequeter on word: "+word)
-					return True 
+				numPremises+=1
+				for premiseWord in premise.description.split():
+					if word == premiseWord:
+						found = True
+						break
+				if found:
+					break;
+
+			#if this idea has no premises, then treat it as an axiom true in itself.
+			#this cannot be a nonsequeter in this case.
+			if numPremises == 0:
+				return False
+					
+			if not found: 
+				print("Found nonsequeter for idea: "+idea.name+" on word: "+word)
+				return True 
 
 		#we've checked all the relevant words and failed to find a non-sequeter
 		return False
@@ -60,7 +69,7 @@ class IfThenTheory(Theory):
 	def checkNonSequeters(self):
 		nonSeq = list()
 		for idea in self.ideaNetwork.nodes():
-			if self.isNonSequeterNaive(idea.name):
+			if self.isNonSequeterNaive(idea):
 				nonSeq.append(idea)
 
 		return nonSeq

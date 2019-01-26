@@ -104,12 +104,23 @@ class Theory:
 		#rank each node according to its sigma adjusted value
 		ranked = list()
 		for idea in ideas:
+			#we don't want to divide by zero, so if sigma is zero just rank according to 
+			#the raw unadjusted degree
+			normalization = sigma
+			if sigma == 0:
+				normalization = 1
+
 			#mark the node with its value
-			self.setAttribute(idea, 'connectivityRating', self.getDeg(idea)/sigma)
+			self.setAttribute(idea, 'connectivityRating', self.getDeg(idea)/normalization)
 			ranked.append(idea)
 
+
 		#sort ideas by connectivity
-		ranked.sort(key = lambda idea: self.getAttribute(idea, 'connectivityRating'), reverse=True)
+		#however don't bother sorting if sigma is 0 since this only occurs when every node
+		#has the same degree, implying that order doesn't matter
+		if sigma != 0:
+			ranked.sort(key = lambda idea: self.getAttribute(idea, 'connectivityRating'), reverse=True)
+		
 		return ranked
 
 

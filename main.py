@@ -8,13 +8,13 @@ def main():
 
 	arg = ""
 	while True:
-		arg = input("Knowlengine: What kind of theory? Brainstorm or IfThen: ")
-		if arg == "Brainstorm":
+		arg = input("Knowlengine: What kind of theory? Brainstorm(1) or IfThen(2): ")
+		if arg == "1":
 			print("Using Brainstorm theory type.\n")
 			t = Theory()
 			break
 
-		elif arg == "IfThen":
+		elif arg == "2":
 			print("Using IfThen theory type.\n")
 			t = IfThenTheory()
 			break
@@ -48,7 +48,7 @@ def main():
 			t.removeLink(ideaA, ideaB)
 			print()
 
-		elif arg == "display":
+		elif arg == "disp":
 			t.display()
 
 		elif arg == "rank":
@@ -62,11 +62,15 @@ def main():
 				print("Unrecognized argument.\n")
 
 			print("Circular logic: ")
-			for circle in t.checkCircularity():
-				names = list()
-				for idea in circle:
-					names.append(idea.name)
-				print(str(names))
+			circles = t.checkCircularity()
+			if circles is None:
+				print("No circular logic found!")
+			else:
+				for circle in circles:
+					names = list()
+					for idea in circle:
+						names.append(idea.name)
+					print(str(names))
 			print()
 
 		elif arg == "nonseq":
@@ -80,9 +84,9 @@ def main():
 
 		elif arg == "help":
 			if not isinstance(t, IfThenTheory): 
-				print("Commands: add, link, rmIdea, rmLink, rank, display, exit\n")
+				print("Commands: add, link, rmIdea, rmLink, rank, disp, exit\n")
 			else:
-				print("Commands: add, link, rmIdea, rmLink, rank, circ, nonseq, display, exit\n")
+				print("Commands: add, link, rmIdea, rmLink, rank, circ, nonseq, disp, exit\n")
 
 		elif arg == "exit":
 			break
